@@ -1,0 +1,87 @@
+---=-==-=---
+--=-CORE-=--
+---=-==-=---
+
+Logowanie / Rejestracja 
+Postać - Poziom, klasa(?), ~8 item slotów, staty, złoto, (mikstury / buffy) *
+Sklep(y) - Zbroja, bronie, akcesoria (potencjalnie oddzielny na akcesoria)
+Karczma, Zlecenia - Energia (Awanturniczość), Zleceniodawcy (jedyne co to wysyłają postać na misje)
+
+Eq - podstawowe przedmioty ok. 10 (?) każdego typu (w sumie 80 - 100)
+Przeciwnicy - ok. 15 z różnymi statami
+
+--Mechanicznie--
+Postać:
+  Poziom
+  Klasa (?)
+  wymyślić staty, przelicznik stat na odpowiednie czynniki (Con -> hp, str -> dmg (warrior case))
+  Eq - ~8 slotów do wyekwipowania, ~5 przechowywania
+  Hp
+
+Misja: 
+  zabiera określoną ilość energii,
+  od 2 do 15min czekania, na koniec turowe autobattle (cios za cios),
+  daje złoto, doświadczenie, mała szansa na losowy item 
+
+Energia:
+  odnawia się każdego dnia, 
+  jest zużywana na misje,
+  może być dodana za pomocą piwa w karczmie*
+
+Sklep:
+  Wystawione 6 (?) przedmiotów, zmieniających się każdego dnia (irl), bądź możliwość odświeżenia za odpowiednią cenę.
+
+--=-==-===-==-=--
+-=-Baza Danych-=-
+--=-==-===-==-=--
+(również są to klasy jakie trzeba zaimplementować)
+
+Gracze:
+  ID_Konta (needed?)
+  Login,
+  Hasło,
+  ID_Postaci
+
+Postacie:
+  ID_Postaci,
+  Nazwa,
+  Klasa *,
+  Poziom, 
+  Exp,
+  
+  Stat_1_base,
+  Stat_1_final,
+  Stat_2_base,
+  Stat_2_final,
+  ...
+  Stat_n_final,
+  
+  Eq_czapa,
+  Eq_zbroja,
+  ...
+  Eq_pierścień (w/e),
+
+  Energia,
+  StanZleceń, (?)
+  StanSklepu (?)
+
+Itemy:
+  ID_item, 
+  Nazwa,
+  Typ (zbroja, czapa...),
+  
+  Stat_1, 
+  Stat_2,
+  ...
+  Stat_n,
+
+Przeciwnicy:
+  ID_Przec,
+  Nazwa,
+  IMG(?)*,
+  Poziom,
+
+  Dmg_do_lvl_low,
+  Dmg_do_lvl_high,
+  Hp_do_lvl,
+  Staty*
