@@ -1,27 +1,54 @@
 ---=-==-=---
 --=-CORE-=--
 ---=-==-=---
-
 Logowanie / Rejestracja 
-Postać - Poziom, klasa(?), ~8 item slotów, staty, złoto, (mikstury / buffy) *
-Sklep(y) - Zbroja, bronie, akcesoria (potencjalnie oddzielny na akcesoria)
-Karczma, Zlecenia - Energia (Awanturniczość), Zleceniodawcy (jedyne co to wysyłają postać na misje)
+  Tworzy konto gracza i przypisaną postać. Auto inicjalizacja stat, złota oraz domyślny wartości
 
-Eq - podstawowe przedmioty ok. 10 (?) każdego typu (w sumie 80 - 100)
-Przeciwnicy - ok. 15 z różnymi statami
+Postać 
+  Centralny obiekt gracza: poziom, doświadczenie, złoto, energia i 5 statystyk (STR/DEX/INT/CON/LCK) (+armor)
 
---Mechanicznie--
-Postać:
-  Poziom
-  Klasa (?)
-  wymyślić staty, przelicznik stat na odpowiednie czynniki (Con -> hp, str -> dmg (warrior case))
-  Eq - ~8 slotów do wyekwipowania, ~5 przechowywania
-  Hp
+Staty i Skalowanie
+  STR = dmg, CON = HP, DEX = unik, LCK crit (może RNG), INT jest statem przyszłościowym
 
-Misja: 
-  zabiera określoną ilość energii,
-  od 2 do 15min czekania, na koniec turowe autobattle (cios za cios),
-  daje złoto, doświadczenie, mała szansa na losowy item 
+Ekwipunek
+  System instancji itemów wyposażanych w sloty, każdy item może mieć losowe staty, sumuje się do statów postaci
+  9 slotów + 5 wolnych
+
+Itemy
+  Itemy korzystają z templateów, z których generowane są instancje o losowych statystykach i wartościach (RNG + scaling)
+
+Przeciwnicy 
+  templaty potworów, skalowane dynamicznie względem poziomu gracza w momencie rozpoczęcia misji
+
+Zlecenia (template)
+  Szablony misji zawierające opis oraz bazowe nagrody (gold, exp), służą jako źródło do generowania ofert
+
+Generowanie zleceń (oferty gracza)
+  Dynamiczne generowanie 3 aktywnych zleceń dla gracza na podstawie seeda (player_id + data), odświeżane po wykonaniu jednego z nich lub przy daily reset (brak zapisu w bazie danych)
+
+Misja (wykonanie zlecenia)
+  Instancja aktywnego zlecenia, zużywa energię, uruchamia timer (2–15 minut) na koniec autobattle, nagrody w postaci złota, doświadczenia oraz szansy na drop it
+
+Autobattle
+  Turowa walka rozgrywana automatycznie po zakończeniu misji. Ataki wykonywane naprzemiennie dmg, uniki, kryty są wyliczane na podstawie statystyk gracza i przeciwnika
+
+Energia
+  Zużywana na misjie, może zostać odnowiona piwem (za opłatą w złocie) bądź w pełni zwracana na początek każdego dnia
+
+Karczma
+  Centrum interakcji z systemem misji i energii
+
+Sklepy (Zbrojownia i Sklep Magiczny)
+  System rotujących ofert generowanych per gracz, zawiera 6 przedmiotów dziennie, skalowanych względem poziomu gracza, bez trwałego zapisu stanu w bazie
+
+Generowanie sklepu (oferty gracza)
+  Mechanizm tworzący unikalny zestaw przedmiotów dla każdego gracza na podstawie deterministycznego seeda (player_id + data)
+
+Skalowanie progresji
+  Automatyczne dostosowywanie trudności potworów, nagród i ofert do poziomu gracza w celu utrzymania stałej krzywej progresji bez potrzeby tworzenia osobnych wariantów contentu
+
+Pętla gry (core loop)
+  Cykl rozgrywki oparty o wybór zlecenia, zużycie energii, wykonanie misji, walkę, zdobycie nagród, rozwój postaci oraz rotację ofert sklepu i zleceń
 
 Energia:
   odnawia się każdego dnia, 
@@ -36,52 +63,76 @@ Sklep:
 --=-==-===-==-=--
 (również są to klasy jakie trzeba zaimplementować)
 
-Gracze:
-  ID_Konta (needed?)
+Konta:
+  ID_Konta - PK, 
   Login,
-  Hasło,
-  ID_Postaci
-
+  Hasło_Hash
+  
 Postacie:
-  ID_Postaci,
+  ID_Postaci - PK,
+  ID_Konta - FK,
   Nazwa,
-  Klasa *,
-  Poziom, 
+
+  Poziom,
   Exp,
   
-  Stat_1_base,
-  Stat_1_final,
-  Stat_2_base,
-  Stat_2_final,
-  ...
-  Stat_n_final,
-  
-  Eq_czapa,
-  Eq_zbroja,
-  ...
-  Eq_pierścień (w/e),
+  Gold,
+  Energia
 
-  Energia,
-  StanZleceń, (?)
-  StanSklepu (?)
+Staty_Postaci:
+  ID_Postaci,
+  Strength,
+  Dexterity,
+  Intelligence,
+  Constitution,
+  Luck,
+
+Ekwipunek_Postaci:
+  ID_eq - PK,
+  ID_Postaci,
+  
+  ID_InstancjiItemu, 
+  ID_Itemu - FK,
+
+  slot
+
+Staty_Instancji_Itemów: 
+  ID_InstancjiItemu,
+  
+  TypStaty enum( DmgMin, DmgMax, Str, Dex, Int, Con, Lck),
+  value
 
 Itemy:
-  ID_item, 
+  ID_Itemu - PK, 
   Nazwa,
-  Typ (zbroja, czapa...),
-  
-  Stat_1, 
-  Stat_2,
-  ...
-  Stat_n,
+  typ, 
+  Sprite,
+
+
 
 Przeciwnicy:
-  ID_Przec,
-  Nazwa,
-  IMG(?)*,
-  Poziom,
+  ID_Przeciwnika,
+  Nazwa, 
+  Sprite, 
+  typ, 
+  
+  BaseHP,
+  BaseDmgMin,
+  BaseDmgMax,
+  BaseStr,
+  BaseDex,
+  BaseInt,
+  BaseCon,
+  BaseLck
 
-  Dmg_do_lvl_low,
-  Dmg_do_lvl_high,
-  Hp_do_lvl,
-  Staty*
+Zlecenia:
+  ID_Zlecenia,
+  Nazwa, 
+  Opis,
+
+  typ_przeciwnikow,
+
+  BaseExp,
+  BaseGold,
+
+  Duration
