@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TK RPG Register</title>
+</head>
+<body>
+  <h1>Create Account</h1>
+
+  <form id="registerForm">
+    Email:</br>
+    <input id="email" placeholder="test@email.com" /><br/><br/>
+    Login:</br>
+    <input id="login" placeholder="(min 3 characters)" /><br/><br/>
+    Password:</br>
+    <input id="password" type="password" placeholder="(min 6 chars)" /><br/><br/>
+    Today's date:</br>
+    <input
+      type="text"
+      id="date"
+      placeholder="dd/mm/yyyy"
+      pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
+      required
+    />
+    <button type="submit">Register</button>
+  </form>
+
+  <pre id="output"></pre>
+
+  <script>
+    const form = document.getElementById("registerForm");
+    const output = document.getElementById("output");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const login = document.getElementById("login").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const tDate = document.getElementById("date").value;
+
+      if (!validateDate(tDate)) {
+        alert("Data musi być w formacie dd/mm/yyyy");
+        return;
+      }
+
+      // --- FRONTEND VALIDATION ---
+      if (login.length < 3) {
+        output.textContent = "Login too short";
+        return;
+      }
+
+      if (!email.includes("@")) {
+        output.textContent = "Invalid email";
+        return;
+      }
+
+      if (password.length < 6) {
+        output.textContent = "Password too short";
+        return;
+      }
+
+      if (!tDate) {
+        output.textContent = "Date required";
+        return;
+      }
+
+      const payload = {
+        login,
+        email,
+        password,
+        date: tDate
+      };
+
+      try {
+        const res = await fetch("http://localhost:8080/api/auth/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const text = await res.json();
+
+        output.textContent = text;
+
+      } catch (err) {
+        output.textContent = "Error: " + err;
+      }
+    });
+
+    function validateDate(date) {
+      const clean = date.trim();
+      const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+      return regex.test(clean);
+    }
+  </script>
+
+</body>
+</html>
