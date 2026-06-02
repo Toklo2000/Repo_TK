@@ -83,7 +83,7 @@ Staty_Postaci:
   ID_Postaci,
   Strength,
   Dexterity,
-  Intelligence,
+  Intelligence,k
   Constitution,
   Luck,
 

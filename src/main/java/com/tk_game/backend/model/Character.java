@@ -13,9 +13,13 @@ public class Character {
   private Long id;
 
   @OneToOne
+  @JoinColumn(name = "account_id", nullable = false)
   private Account account;
-
+  
   private String name;
+
+  @OneToMany(mappedBy = "character")
+  private List<Equipment> equipment;
 
   private int level = 1;
   private int exp = 0;
@@ -38,8 +42,24 @@ public class Character {
   public void setName(String name) { this.name = name; }
 
   public int getLevel() { return level; }
+  public void setLevel(int level) { this.level = level; }
   public int getExp() { return exp; }
+  public void setExp(int exp) { this.exp = exp; }
 
   public int getGold() { return gold; }
+  public void setGold(int gold) { this.gold = gold; }
   public int getEnergy() { return energy; }
+  public void setEnergy(int energy) { this.energy = energy; }
+
+
+  public int getStrength() { return strength; }
+  public void setStrength(int strength) { this.strength = strength; }
+  public int getDexterity() { return dexterity; }
+  public void setDexterity(int dexterity) { this.dexterity = dexterity; }
+  public int getIntelligence() { return intelligence; }
+  public void setIntelligence(int intelligence) { this.intelligence = intelligence; }
+  public int getConstitution() { return constitution; }
+  public void setConstitution(int constitution) { this.constitution = constitution; }
+  public int getLuck() { return luck; }
+  public void setLuck(int luck) { this.luck = luck; }
 }
