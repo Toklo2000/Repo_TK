@@ -13,7 +13,8 @@ public class Account {
 
   private String login;
   private String passwordHash;
-
+  private String email;
+  
   public Long getId() { return id; }
 
   public String getLogin() { return login; }
@@ -21,4 +22,8 @@ public class Account {
 
   public String getPasswordHash() { return passwordHash; }
   public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+
+  public String getEmail() { return email; }
+  public void setEmail(String email) { this.email = email; }
+
 }

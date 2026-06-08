@@ -8,20 +8,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class CharacterService {
 
-  private final CharacterRepository repo;
+  private final CharacterRepository characterRepository;
 
-  public CharacterService(CharacterRepository repo) {
-    this.repo = repo;
+  public CharacterService(CharacterRepository characterRepository) {
+    this.characterRepository = characterRepository;
   }
 
   public Character createCharacter(Account account) {
     Character c = new Character();
     c.setAccount(account);
     c.setName("Hero_" + account.getLogin());
-    return repo.save(c);
+    
+    return characterRepository.save(c);
   }
 
   public Character getByAccountId(Long accountId) {
-    return repo.findByAccountId(accountId);
+    return characterRepository.findByAccount_Id(accountId);
   }
 }

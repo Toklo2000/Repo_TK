@@ -2,7 +2,7 @@ package com.tk_game.backend.model;
 
 import com.tk_game.backend.model.ItemTemplate;
 import com.tk_game.backend.model.ItemInstance;
-import com.tk_game.backend.enum.StatType;
+import com.tk_game.backend.enume.StatType;
 import jakarta.persistence.*;
 
 @Entity

@@ -1,8 +1,8 @@
 package com.tk_game.backend.model;
 
 import com.tk_game.backend.model.Account;
-
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "characters")
@@ -50,7 +50,6 @@ public class Character {
   public void setGold(int gold) { this.gold = gold; }
   public int getEnergy() { return energy; }
   public void setEnergy(int energy) { this.energy = energy; }
-
 
   public int getStrength() { return strength; }
   public void setStrength(int strength) { this.strength = strength; }

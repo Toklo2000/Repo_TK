@@ -1,4 +1,4 @@
-package com.tk_game.backend.enum;
+package com.tk_game.backend.enume;
 
 public enum StatType {
   STR,

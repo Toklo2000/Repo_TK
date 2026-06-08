@@ -81,9 +81,8 @@
           body: JSON.stringify(payload)
         });
 
-        const text = await res.json();
-
-        output.textContent = text;
+      const data = await res.json();
+      window.location.href = `/create-character.html?accountId=${data.id}`;
 
       } catch (err) {
         output.textContent = "Error: " + err;
