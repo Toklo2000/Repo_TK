@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>RPG City</title>
+</head>
+<body>
+
+<div>
+  Gold: <span id="gold"></span> |
+  Level: <span id="level"></span>
+</div>
+
+<hr>
+
+<button onclick="render('city')">City</button>
+<button onclick="render('shop')">Shop</button>
+<button onclick="render('tavern')">Tavern</button>
+<button onclick="render('character')">Character</button>
+
+<hr>
+
+<div id="app"></div>
+
+<script src="/js/api.js"></script>
+<script src="/js/hud.js"></script>
+<script src="/js/views/cityView.js"></script>
+<script src="/js/views/shopView.js"></script>
+<script src="/js/views/tavernView.js"></script>
+<script src="/js/views/characterView.js"></script>
+<script src="/js/router.js"></script>
+<script src="/js/actions.js"></script>
+<script src="/js/app.js"></script>
+
+</body>
+</html>

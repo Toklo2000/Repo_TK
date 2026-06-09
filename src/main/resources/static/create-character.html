@@ -11,23 +11,7 @@
 <input id="name" placeholder="Character name" />
 <button onclick="create()">Create</button>
 
-<script>
-async function create() {
-  const params = new URLSearchParams(window.location.search);
-  const accountId = params.get("accountId");
-  const name = document.getElementById("name").value;
-
-  const res = await fetch(
-    `http://localhost:8080/api/character/create?accountId=${accountId}&name=${name}`,
-    { method: "POST" }
-  );
-
-  const data = await res.json();
-  console.log(data);
-
-  alert("Character created!");
-}
-</script>
+<script src="/js/create-character.js"></script>
 
 </body>
 </html>

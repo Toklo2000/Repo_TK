@@ -21,7 +21,7 @@ public class AuthController {
     this.authService = authService;
   }
 
-  @PostMapping("/register")
+  @PostMapping(value = "/register", produces = "application/json")
   public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDTO request) {
     Account acc = authService.register(request);
     return ResponseEntity.ok(Map.of("id", acc.getId()));
