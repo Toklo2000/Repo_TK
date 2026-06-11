@@ -3,9 +3,7 @@ package com.tk_game.backend.controller;
 import com.tk_game.backend.service.CharacterService;
 import com.tk_game.backend.dto.CharacterDTO;
 import com.tk_game.backend.model.Character;
-import com.tk_game.backend.repository.CharacterRepository;
 import com.tk_game.backend.model.Account;
-import com.tk_game.backend.repository.AccountRepository;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -13,22 +11,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/character")
 public class CharacterController {
 
-  private final AccountRepository accountRepository;
-  private final CharacterRepository characterRepository;
   private final CharacterService characterService;
 
-  public CharacterController(CharacterService characterService, AccountRepository accountRepository, CharacterRepository characterRepository) {
+  public CharacterController(CharacterService characterService) {
     this.characterService = characterService;
-    this.accountRepository = accountRepository;
-    this.characterRepository = characterRepository;
   }
 
   @PostMapping("/create")
   public Character create(@RequestParam Long accountId, @RequestParam String name) {
-    Account account = accountRepository.findById(accountId)
-        .orElseThrow(() -> new RuntimeException("Account not found"));
-
-    return characterService.createCharacter(account, name);
+    return characterService.createCharacter(accountId, name);
   }
 
   @GetMapping("/{accountId}")
@@ -55,7 +46,7 @@ public class CharacterController {
       case "luck" -> character.setLuck(character.getLuck() + 1);
     }
     
-    Character saved = characterRepository.save(character);
+    Character saved = characterService.UpdateCharacter(character);
     return characterService.toDTO(character);
   }
 }
