@@ -20,7 +20,7 @@ public class CharacterController {
   private final ItemInstanceRepository itemInstanceRepository;
   private final ItemStatRepository itemStatRepository;
 
-  public CharacterController(CharacterService characterService, ItemInstanceRepository itemInstanceRepository, ItemStatRepository ItemStatRepository) {
+  public CharacterController(CharacterService characterService, ItemInstanceRepository itemInstanceRepository, ItemStatRepository itemStatRepository) {
     this.characterService = characterService;
     this.itemInstanceRepository = itemInstanceRepository;
     this.itemStatRepository = itemStatRepository;
