@@ -18,9 +18,6 @@ public class Character {
   
   private String name;
 
-  @OneToMany(mappedBy = "character")
-  private List<Equipment> equipment;
-
   private int level = 1;
   private int exp = 0;
 

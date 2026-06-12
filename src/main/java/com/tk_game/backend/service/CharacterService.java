@@ -5,6 +5,7 @@ import com.tk_game.backend.model.Character;
 import com.tk_game.backend.dto.CharacterDTO;
 import com.tk_game.backend.repository.CharacterRepository;
 import com.tk_game.backend.repository.AccountRepository;
+import com.tk_game.backend.gamelayer.StatsHelper;
 
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class CharacterService {
         .orElseThrow(() -> new RuntimeException("Account not found"));
 
     Character character = new Character();
+
     character.setAccount(account);
     character.setName(name);
 
@@ -42,7 +44,8 @@ public class CharacterService {
   }
 
   public Character getByAccountId(Long accountId) {
-    return characterRepository.findByAccount_Id(accountId);
+    return characterRepository.findByAccount_Id(accountId)
+      .orElseThrow(() -> new RuntimeException("Character not found"));
   }
 
   public CharacterDTO toDTO(Character c) {
@@ -64,7 +67,18 @@ public class CharacterService {
     return dto;
   }
 
+  public CharacterDTO upgradeStat(Long accountId, String stat) {
+    Character character = getByAccountId(accountId);
+    
+    StatsHelper.upgradeStat(character, stat);
+    Character saved = characterRepository.save(character);
+    
+    return toDTO(saved);
+  }
+
   public Character UpdateCharacter(Character c) {
     return characterRepository.save(c);
   }
+
+
 }

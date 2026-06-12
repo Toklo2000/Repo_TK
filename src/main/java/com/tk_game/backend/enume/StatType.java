@@ -5,7 +5,5 @@ public enum StatType {
   DEX,
   INT,
   CON,
-  LCK,
-  DMG_MIN,
-  DMG_MAX
+  LCK
 }
