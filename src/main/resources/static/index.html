@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TK RPG — Create Account</title>
+  <title>TK RPG — Sign In</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html, body { height: 100%; }
-
     body {
       min-height: 100vh;
       background: #2b1d0e;
@@ -20,7 +18,6 @@
       font-family: 'Crimson Text', Georgia, serif;
       color: #e8d5b0;
     }
-
     .card {
       width: 100%;
       max-width: 420px;
@@ -31,7 +28,6 @@
       padding: 2.5rem 2.25rem 2rem;
       color: #3a2510;
     }
-
     .card-title {
       font-family: 'Cinzel', serif;
       font-size: 1.6rem;
@@ -41,16 +37,13 @@
       letter-spacing: 0.06em;
       margin-bottom: 0.2rem;
     }
-
     .divider {
       border: none;
       border-top: 1px solid #c8a060;
       margin: 1rem 0 1.5rem;
       opacity: 0.5;
     }
-
     .field { margin-bottom: 1.1rem; }
-
     label {
       display: block;
       font-family: 'Cinzel', serif;
@@ -61,7 +54,6 @@
       text-transform: uppercase;
       margin-bottom: 0.35rem;
     }
-
     input {
       width: 100%;
       background: #fffbf0;
@@ -76,10 +68,8 @@
       transition: border-color 0.2s, box-shadow 0.2s;
       -webkit-appearance: none;
     }
-
     input::placeholder { color: #b8a080; font-style: italic; }
     input:focus { border-color: #8b6020; box-shadow: 0 0 0 2px rgba(139,96,32,0.15); }
-
     .btn {
       width: 100%;
       margin-top: 1.5rem;
@@ -97,10 +87,8 @@
       border-radius: 1px;
       transition: background 0.2s;
     }
-
     .btn:hover { background: #6e4218; }
     .btn:active { background: #3a2008; }
-
     .output {
       margin-top: 0.9rem;
       font-size: 0.92rem;
@@ -109,59 +97,41 @@
       text-align: center;
       min-height: 1.2rem;
     }
-
     .output.error { color: #8b2020; }
     .output.success { color: #2a6020; }
-
-    .login-link {
+    .register-link {
       text-align: center;
       margin-top: 1.2rem;
       font-size: 0.95rem;
       color: #7a5828;
     }
-
-    .login-link a {
+    .register-link a {
       color: #5a3510;
       font-weight: 600;
       text-decoration: underline;
       text-underline-offset: 2px;
     }
-
-    .login-link a:hover { color: #3a2008; }
+    .register-link a:hover { color: #3a2008; }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1 class="card-title">Create Account</h1>
+    <h1 class="card-title">Sign In</h1>
     <hr class="divider">
-    <form id="registerForm">
-      <div class="field">
-        <label for="email">Email</label>
-        <input id="email" type="email" placeholder="your@email.com" autocomplete="email" />
-      </div>
+    <form id="loginForm">
       <div class="field">
         <label for="login">Login</label>
-        <input id="login" placeholder="min. 3 characters" autocomplete="username" />
+        <input id="login" placeholder="your login" autocomplete="username" />
       </div>
       <div class="field">
         <label for="password">Password</label>
-        <input id="password" type="password" placeholder="min. 6 characters" autocomplete="new-password" />
+        <input id="password" type="password" placeholder="your password" autocomplete="current-password" />
       </div>
-      <div class="field">
-        <label for="date">Date of Birth</label>
-        <input
-          type="text"
-          id="date"
-          placeholder="dd/mm/yyyy"
-          pattern="^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"
-          required
-        />
-      </div>
-      <button type="submit" class="btn">Register</button>
+      <button type="submit" class="btn">Login</button>
     </form>
     <div class="output" id="output"></div>
-    <p class="login-link">Already have an account? <a href="/login">Sign in</a></p>
+    <p class="register-link">Don't have an account? <a href="/register.html">Register now!</a></p>
   </div>
-  <script src="/js/register.js"></script>
+  <script src="/js/login.js"></script>
 </body>
 </html>

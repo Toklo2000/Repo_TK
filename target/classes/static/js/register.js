@@ -38,7 +38,7 @@ form.addEventListener("submit", async (e) => {
     const data = JSON.parse(text);
 
     localStorage.setItem("accountId", data.id);
-    window.location.href = "/create-character.html";
+    window.location.href = '/index.html';
   
   } catch (err) {
     console.log(err);
