@@ -42,3 +42,15 @@ INSERT INTO item_template (id, name, sprite, type) VALUES (24, 'Epic Ring of Pow
 INSERT INTO item_template (id, name, sprite, type) VALUES (25, 'Rope Belt', 'ropeBelt.png', 'BELT') ON CONFLICT (id) DO NOTHING;
 INSERT INTO item_template (id, name, sprite, type) VALUES (26, 'Military Leather Belt', 'militaryLeatherBelt.png', 'BELT') ON CONFLICT (id) DO NOTHING;
 INSERT INTO item_template (id, name, sprite, type) VALUES (27, 'Epic Titan Girdle', 'epicTitanGirdle.png', 'BELT') ON CONFLICT (id) DO NOTHING;
+
+-- ENEMIES
+INSERT INTO enemy_template (id, name, sprite, type, base_hp, base_dmg_min, base_dmg_max, base_str, base_dex, base_int, base_con, base_lck) VALUES (1, 'Goblin', 'goblin.png', 'BEAST', 20, 3, 6, 2, 3, 1, 2, 1) ON CONFLICT (id) DO NOTHING;
+INSERT INTO enemy_template (id, name, sprite, type, base_hp, base_dmg_min, base_dmg_max, base_str, base_dex, base_int, base_con, base_lck) VALUES (2, 'Wolf', 'wolf.png', 'BEAST', 25, 4, 8, 3, 4, 1, 3, 1) ON CONFLICT (id) DO NOTHING;
+INSERT INTO enemy_template (id, name, sprite, type, base_hp, base_dmg_min, base_dmg_max, base_str, base_dex, base_int, base_con, base_lck) VALUES (3, 'Bandit', 'bandit.png', 'HUMAN', 30, 5, 10, 4, 3, 2, 3, 2) ON CONFLICT (id) DO NOTHING;
+INSERT INTO enemy_template (id, name, sprite, type, base_hp, base_dmg_min, base_dmg_max, base_str, base_dex, base_int, base_con, base_lck) VALUES (4, 'Skeleton', 'skeleton.png', 'UNDEAD', 22, 4, 7, 3, 2, 1, 2, 1) ON CONFLICT (id) DO NOTHING;
+INSERT INTO enemy_template (id, name, sprite, type, base_hp, base_dmg_min, base_dmg_max, base_str, base_dex, base_int, base_con, base_lck) VALUES (5, 'Troll', 'troll.png', 'BEAST', 60, 8, 15, 7, 2, 1, 6, 1) ON CONFLICT (id) DO NOTHING;
+INSERT INTO enemy_template (id, name, sprite, type, base_hp, base_dmg_min, base_dmg_max, base_str, base_dex, base_int, base_con, base_lck) VALUES (6, 'Vampire', 'vampire.png', 'UNDEAD', 35, 6, 12, 5, 5, 4, 4, 3) ON CONFLICT (id) DO NOTHING;
+INSERT INTO enemy_template (id, name, sprite, type, base_hp, base_dmg_min, base_dmg_max, base_str, base_dex, base_int, base_con, base_lck) VALUES (7, 'Lich', 'lich.png', 'UNDEAD', 40, 8, 16, 3, 2, 8, 4, 2) ON CONFLICT (id) DO NOTHING;
+INSERT INTO enemy_template (id, name, sprite, type, base_hp, base_dmg_min, base_dmg_max, base_str, base_dex, base_int, base_con, base_lck) VALUES (8, 'Wyvern', 'wyvern.png', 'BEAST', 50, 10, 18, 7, 6, 3, 5, 2) ON CONFLICT (id) DO NOTHING;
+INSERT INTO enemy_template (id, name, sprite, type, base_hp, base_dmg_min, base_dmg_max, base_str, base_dex, base_int, base_con, base_lck) VALUES (9, 'Hobgoblin', 'hobgoblin.png', 'BEAST', 28, 5, 9, 4, 3, 2, 3, 2) ON CONFLICT (id) DO NOTHING;
+INSERT INTO enemy_template (id, name, sprite, type, base_hp, base_dmg_min, base_dmg_max, base_str, base_dex, base_int, base_con, base_lck) VALUES (10, 'Rat', 'rat.png', 'BEAST', 10, 1, 3, 1, 5, 1, 1, 4) ON CONFLICT (id) DO NOTHING;

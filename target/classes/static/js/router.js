@@ -7,11 +7,11 @@ async function render(view) {
   }
 
   if (view === "shop") {
-    app.innerHTML = renderShop();
+    app.innerHTML = await renderShop();
   }
 
   if (view === "tavern") {
-    app.innerHTML = renderTavern();
+    app.innerHTML = await renderTavern();
   }
 
   if (view === "character") {

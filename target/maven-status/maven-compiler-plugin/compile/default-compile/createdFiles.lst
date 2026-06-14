@@ -33,5 +33,5 @@ com/tk_game/backend/gamelayer/ItemLogic.class
 com/tk_game/backend/model/ItemTemplate.class
 com/tk_game/backend/controller/CharacterController.class
 com/tk_game/backend/model/QuestTemplate.class
-com/tk_game/backend/dto/RegisterRequestDTO.class
 com/tk_game/backend/model/Mission.class
+com/tk_game/backend/dto/RegisterRequestDTO.class

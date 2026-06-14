@@ -24,10 +24,7 @@ public class ItemService {
   private final CharacterRepository characterRepo;
   private final ItemStatRepository itemStatRepo; 
 
-  public ItemService(ItemInstanceRepository itemInstanceRepo,
-                     ItemTemplateRepository itemTemplateRepo,
-                     CharacterRepository characterRepo,
-                     ItemStatRepository itemStatRepo) {
+  public ItemService(ItemInstanceRepository itemInstanceRepo, ItemTemplateRepository itemTemplateRepo, CharacterRepository characterRepo, ItemStatRepository itemStatRepo) {
     this.itemInstanceRepo = itemInstanceRepo;
     this.itemTemplateRepo = itemTemplateRepo;
     this.characterRepo = characterRepo;
@@ -51,15 +48,15 @@ public class ItemService {
     int statsCount = ItemLogic.rollStatCount(random);
 
     for (int i = 0; i < statsCount; i++) {
-        StatType rolledType = ItemLogic.rollStatType(random);
-        int rolledValue = ItemLogic.rollStatValue(random, itemLevel);
+      StatType rolledType = ItemLogic.rollStatType(random);
+      int rolledValue = ItemLogic.rollStatValue(random, itemLevel);
 
-        ItemStat itemStat = new ItemStat();
-        itemStat.setItemInstance(savedItem); 
-        itemStat.setType(rolledType);
-        itemStat.setValue(rolledValue);
+      ItemStat itemStat = new ItemStat();
+      itemStat.setItemInstance(savedItem); 
+      itemStat.setType(rolledType);
+      itemStat.setValue(rolledValue);
 
-        itemStatRepo.save(itemStat); 
+      itemStatRepo.save(itemStat); 
     }
 
     return savedItem;
@@ -94,5 +91,33 @@ public class ItemService {
         .orElseThrow(() -> new RuntimeException("Item not found"));
     item.setSlot(EquipmentSlot.UNEQUIPPED);
     itemInstanceRepo.save(item);
+  
+  }
+  @Transactional
+  public ItemInstance createItemWithSeed(Long templateId, Long characterId, int itemLevel, long seed) {
+    ItemTemplate template = itemTemplateRepo.findById(templateId).orElseThrow(() -> new RuntimeException("Template not found"));
+    Character character = characterRepo.findById(characterId).orElseThrow(() -> new RuntimeException("Character not found"));
+
+    ItemInstance item = new ItemInstance();
+    item.setTemplate(template);
+    item.setCharacter(character);
+    item.setSlot(EquipmentSlot.UNEQUIPPED);
+    ItemInstance savedItem = itemInstanceRepo.save(item);
+
+    Random random = ItemLogic.createRandom(seed);
+    int statsCount = ItemLogic.rollStatCount(random);
+
+    for (int i = 0; i < statsCount; i++) {
+      StatType rolledType = ItemLogic.rollStatType(random);
+      int rolledValue = ItemLogic.rollStatValue(random, itemLevel);
+
+      ItemStat itemStat = new ItemStat();
+      itemStat.setItemInstance(savedItem);
+      itemStat.setType(rolledType);
+      itemStat.setValue(rolledValue);
+      itemStatRepo.save(itemStat);
+    }
+
+  return savedItem;
   }
 }
