@@ -1,8 +1,12 @@
 package com.tk_game.backend.service;
 
+import com.tk_game.backend.enume.StatType;
+import com.tk_game.backend.gamelayer.StatsHelper;
 import com.tk_game.backend.model.Character;
 import com.tk_game.backend.model.EnemyTemplate;
 import com.tk_game.backend.repository.EnemyTemplateRepository;
+import com.tk_game.backend.repository.ItemInstanceRepository;
+import com.tk_game.backend.repository.ItemStatRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -11,9 +15,13 @@ import java.util.*;
 public class BattleService {
 
   private final EnemyTemplateRepository enemyRepo;
+  private final ItemInstanceRepository itemInstanceRepo;
+  private final ItemStatRepository itemStatRepo;
 
-  public BattleService(EnemyTemplateRepository enemyRepo) {
-      this.enemyRepo = enemyRepo;
+  public BattleService(EnemyTemplateRepository enemyRepo, ItemInstanceRepository itemInstanceRepo, ItemStatRepository itemStatRepo) {
+    this.enemyRepo = enemyRepo;
+    this.itemInstanceRepo = itemInstanceRepo;
+    this.itemStatRepo = itemStatRepo;
   }
 
   public Map<String, Object> runBattle(Character character, Long enemyTemplateId) {
@@ -21,12 +29,19 @@ public class BattleService {
 
     int lvl = character.getLevel();
 
-    int playerHp = lvl * character.getConstitution() + lvl * 10 + 10 * character.getConstitution();
+    Map<StatType, Integer> stats = StatsHelper.calculateTotalStats(character, itemInstanceRepo, itemStatRepo);
+
+    int str = stats.getOrDefault(StatType.STR, 1);
+    int dex = stats.getOrDefault(StatType.DEX, 1);
+    int con = stats.getOrDefault(StatType.CON, 1);
+    int lck = stats.getOrDefault(StatType.LCK, 1);
+
+    int playerHp = lvl * con + lvl * 10 + 10 * con;
 
     int enemyHp = lvl * enemy.getBaseCon() + lvl * enemy.getBaseHp() + enemy.getBaseHp() * enemy.getBaseCon();
 
-    double playerCrit = (double) character.getLuck() / (lvl * lvl * 20.0);
-    double playerDodge = (double) character.getDexterity() * lvl / 100.0;
+    double playerCrit = (double) lck / (lvl * lvl * 20.0);
+    double playerDodge = (double) dex * lvl / 100.0;
     double enemyCrit = (double) enemy.getBaseLck() / (lvl * lvl * 20.0);
     double enemyDodge = (double) enemy.getBaseDex() * lvl / 100.0;
 
@@ -40,7 +55,7 @@ public class BattleService {
       if (rng.nextDouble() < enemyDodge) {
         log.add("Przeciwnik uniknął ataku!");
       } else {
-        int dmg = character.getStrength() * (enemy.getBaseDmgMin() + rng.nextInt(Math.max(1, enemy.getBaseDmgMax() - enemy.getBaseDmgMin() + 1)));
+        int dmg = str * (enemy.getBaseDmgMin() + rng.nextInt(Math.max(1, enemy.getBaseDmgMax() - enemy.getBaseDmgMin() + 1)));
         boolean crit = rng.nextDouble() < playerCrit;
         if (crit) dmg *= 2;
           enemyHp -= dmg;
@@ -69,12 +84,15 @@ public class BattleService {
     boolean playerWon = enemyHp <= 0;
     log.add(playerWon ? "Gracz wygrywa!" : "Gracz przegrywa!");
 
+    int maxPlayerHp = lvl * con + lvl * 10 + 10 * con;
+    int maxEnemyHp = lvl * enemy.getBaseCon() + lvl * enemy.getBaseHp() + enemy.getBaseHp() * enemy.getBaseCon();
+
     Map<String, Object> result = new HashMap<>();
     result.put("won", playerWon);
     result.put("log", log);
     result.put("enemyName", enemy.getName());
-    result.put("maxPlayerHp", lvl * character.getConstitution() + lvl * 10 + 10 * character.getConstitution());
-    result.put("maxEnemyHp", lvl * enemy.getBaseCon() + lvl * enemy.getBaseHp() + enemy.getBaseHp() * enemy.getBaseCon());
+    result.put("maxPlayerHp", maxPlayerHp);
+    result.put("maxEnemyHp", maxEnemyHp);
     result.put("playerName", character.getName());
     return result;
   }

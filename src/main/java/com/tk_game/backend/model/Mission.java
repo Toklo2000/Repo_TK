@@ -19,6 +19,7 @@ public class Mission {
   private long endTime;
   private boolean completed;
   private boolean success;
+  private Long enemyTemplateId;
 
   public Long getId() { return id; }
   public Character getCharacter() { return character; }
@@ -33,4 +34,6 @@ public class Mission {
   public void setCompleted(boolean completed) { this.completed = completed; }
   public boolean isSuccess() { return success; }
   public void setSuccess(boolean success) { this.success = success; }
+  public Long getEnemyTemplateId() { return enemyTemplateId; }
+  public void setEnemyTemplateId(Long enemyTemplateId) { this.enemyTemplateId = enemyTemplateId; }
 }

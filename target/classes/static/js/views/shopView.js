@@ -16,7 +16,7 @@ async function renderShop() {
     <div style="font-family:'Cinzel',serif; font-weight:600; margin-bottom:0.4rem;">${item.name}</div>
     <div style="font-size:0.8rem; color:#6a4818; margin-bottom:0.4rem;">${item.type}</div>
     <div style="font-size:0.8rem; margin-bottom:0.6rem;">${statsText || 'Brak statów'}</div>
-    <div style="font-family:'Cinzel',serif; font-size:0.85rem; margin-bottom:0.6rem;">💰 ${item.price} złota</div>
+    <div style="font-family:'Cinzel',serif; font-size:0.85rem; margin-bottom:0.6rem;">${item.price} złota</div>
     <button onclick="buyItem(${item.templateId}, ${item.price}, ${item.itemSeed})">Kup</button>
     </div>`;
   }
@@ -29,11 +29,10 @@ async function buyItem(templateId, price, itemSeed) {
   const accountId = localStorage.getItem("accountId");
   const character = await get(`/api/character/${accountId}`);
   const result = await post(`/api/shop/buy?characterId=${character.id}&templateId=${templateId}&price=${price}&itemSeed=${itemSeed}`);
-
   if (result.error) {
     alert(result.error);
   } else {
-    alert('Kupiono! Złoto: ' + result.gold);
-    render('shop');
+    await render('shop');
+    await loadHUD();
   }
 }

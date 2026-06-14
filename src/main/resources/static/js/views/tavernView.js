@@ -11,45 +11,69 @@ function renderTavern() {
     </div>
     <div id="tavern-offers" style="display:flex; gap:1rem; flex-wrap:wrap"></div>
     <p id="tavern-status" style="margin-top:1rem; font-style:italic; color:#6a4818"></p>
-    `;
+  `;
 }
 
 let tavernTimerInterval = null;
 let tavernActiveMission = null;
+let tavernCompleting = false;
+let battleStarted = false;
 
 async function loadTavernData() {
   const activeRes = await fetch('/api/tavern/mission/active', { credentials: 'same-origin' });
   if (activeRes.ok) {
     tavernActiveMission = await activeRes.json();
+    const remaining = tavernActiveMission.endTime - Date.now();
+    if (remaining > 0) battleStarted = false;
     showTavernActive();
   } else {
+    tavernActiveMission = null;
+    battleStarted = false;
     const offersRes = await fetch('/api/tavern/offers', { credentials: 'same-origin' });
-    const offers = await offersRes.json();
-    showTavernOffers(offers);
+    showTavernOffers(await offersRes.json());
   }
 }
 
 function showTavernActive() {
   document.getElementById('tavern-active').style.display = 'block';
   document.getElementById('tavern-offers').innerHTML = '';
-  document.getElementById('tavern-battle-area').innerHTML = '';
   document.getElementById('tavern-status').textContent = '';
+  document.getElementById('tavern-battle-area').innerHTML = '';
   document.getElementById('tavern-mission-name').textContent = tavernActiveMission.questTemplate.name;
   document.getElementById('tavern-mission-desc').textContent = tavernActiveMission.questTemplate.description;
   if (tavernTimerInterval) clearInterval(tavernTimerInterval);
-  updateTavernTimer();
-  tavernTimerInterval = setInterval(updateTavernTimer, 1000);
+
+  const saved = sessionStorage.getItem('battleResult');
+  const remaining = tavernActiveMission.endTime - Date.now();
+
+  if (saved) {
+    const result = JSON.parse(saved);
+    result.skipAnimation = true;
+    document.getElementById('tavern-timer').textContent = 'Czas minął! Trwa walka...';
+    battleStarted = true;
+    renderBattleResult(result);
+  } else if (remaining <= 0) {
+    document.getElementById('tavern-timer').textContent = 'Czas minął! Trwa walka...';
+    if (!battleStarted) {
+      battleStarted = true;
+      startQuestBattle();
+    }
+  } else {
+    battleStarted = false;
+    updateTavernTimer();
+    tavernTimerInterval = setInterval(updateTavernTimer, 1000);
+  }
 }
 
 function updateTavernTimer() {
   const remaining = tavernActiveMission.endTime - Date.now();
   const timerEl = document.getElementById('tavern-timer');
-  const battleArea = document.getElementById('tavern-battle-area');
   if (!timerEl) { clearInterval(tavernTimerInterval); return; }
   if (remaining <= 0) {
     timerEl.textContent = 'Czas minął! Trwa walka...';
     clearInterval(tavernTimerInterval);
-    if (battleArea && battleArea.innerHTML === '') {
+    if (!battleStarted) {
+      battleStarted = true;
       startQuestBattle();
     }
   } else {
@@ -63,6 +87,14 @@ async function startQuestBattle() {
   const battleArea = document.getElementById('tavern-battle-area');
 
   const result = await post(`/api/battle/run-for-quest?characterId=${character.id}`);
+  sessionStorage.setItem('battleResult', JSON.stringify(result));
+
+  renderBattleResult(result);
+}
+
+async function renderBattleResult(result) {
+  const battleArea = document.getElementById('tavern-battle-area');
+  if (!battleArea) return;
 
   let playerHp = result.maxPlayerHp;
   let enemyHp = result.maxEnemyHp;
@@ -92,19 +124,18 @@ async function startQuestBattle() {
 
   const linesDiv = document.getElementById('battle-lines');
   const resultDiv = document.getElementById('battle-result');
+  const skipAnimation = result.skipAnimation;
 
   for (let i = 0; i < result.log.length; i++) {
-    await delay(400);
+    if (!skipAnimation) await delay(400);
     const line = document.createElement('div');
     line.textContent = result.log[i];
-
     if (result.log[i].includes('CRIT')) line.style.color = '#b8340a';
     else if (result.log[i].includes('uniknął')) line.style.color = '#4a7a20';
     else if (result.log[i].includes('Runda')) line.style.fontWeight = '600';
 
     const playerHpMatch = result.log[i].match(/HP gracza: (\d+)/);
     const enemyHpMatch = result.log[i].match(/HP wroga: (\d+)/);
-
     if (playerHpMatch) {
       playerHp = parseInt(playerHpMatch[1]);
       const pct = Math.max(0, playerHp / result.maxPlayerHp * 100);
@@ -117,15 +148,14 @@ async function startQuestBattle() {
       document.getElementById('enemy-hp-bar').style.width = pct + '%';
       document.getElementById('enemy-hp-text').textContent = enemyHp + ' / ' + result.maxEnemyHp;
     }
-
     linesDiv.appendChild(line);
     linesDiv.scrollTop = linesDiv.scrollHeight;
   }
 
-  await delay(600);
+  await delay(skipAnimation ? 0 : 600);
   const won = result.won;
   resultDiv.innerHTML = `
-    <strong style="font-size:1.1rem;">${won ? '🏆 Zwycięstwo!' : '💀 Przegrana!'}</strong>
+    <strong style="font-size:1.1rem;">${won ? 'Zwycięstwo!' : 'Przegrana!'}</strong>
     <br><br>
     <button onclick="tavernComplete(${won})">Zakończ misję</button>
   `;
@@ -159,23 +189,19 @@ async function tavernAccept(offerId) {
   }
 }
 
-let tavernCompleting = false;
-
 async function tavernComplete(success) {
   if (tavernCompleting) return;
   tavernCompleting = true;
-
+  battleStarted = false;
+  sessionStorage.removeItem('battleResult');
   await fetch(`/api/tavern/complete?success=${success}`, { method: 'POST', credentials: 'same-origin' });
   tavernActiveMission = null;
   clearInterval(tavernTimerInterval);
-
   const statusEl = document.getElementById('tavern-status');
-  if (statusEl) statusEl.textContent = success ? '✅ Misja zakończona sukcesem!' : '❌ Misja nieudana.';
-
+  if (statusEl) statusEl.textContent = success ? 'Misja zakończona sukcesem!' : 'Misja nieudana.';
   const offersRes = await fetch('/api/tavern/offers', { credentials: 'same-origin' });
   showTavernOffers(await offersRes.json());
   await loadHUD();
-
   tavernCompleting = false;
 }
 

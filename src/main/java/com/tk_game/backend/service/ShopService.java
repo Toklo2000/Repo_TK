@@ -56,6 +56,7 @@ public class ShopService {
       item.put("type", template.getType().name());
       item.put("stats", stats);
       item.put("price", price);
+      item.put("itemSeed", itemSeed);
       result.add(item);
     }
     return result;
