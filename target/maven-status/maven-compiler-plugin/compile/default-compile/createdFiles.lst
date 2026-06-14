@@ -1,5 +1,6 @@
 com/tk_game/backend/repository/ItemInstanceRepository.class
 com/tk_game/backend/repository/QuestTemplateRepository.class
+com/tk_game/backend/model/TavernOffer.class
 com/tk_game/backend/enume/EquipmentSlot.class
 com/tk_game/backend/controller/AuthController.class
 com/tk_game/backend/model/EnemyTemplate.class
@@ -8,9 +9,11 @@ com/tk_game/backend/controller/TestController.class
 com/tk_game/backend/BackendApplication.class
 com/tk_game/backend/enume/StatType.class
 com/tk_game/backend/dto/CharacterDTO.class
+com/tk_game/backend/service/TavernService.class
 com/tk_game/backend/model/ItemStat.class
 com/tk_game/backend/security/AccountUserDetailsService.class
 com/tk_game/backend/service/ItemService.class
+com/tk_game/backend/repository/TavernOfferRepository.class
 com/tk_game/backend/repository/EnemyTemplateRepository.class
 com/tk_game/backend/config/SecurityConfig.class
 com/tk_game/backend/repository/ItemStatRepository.class
@@ -19,6 +22,7 @@ com/tk_game/backend/controller/ItemTestController.class
 com/tk_game/backend/model/Account.class
 com/tk_game/backend/repository/CharacterRepository.class
 com/tk_game/backend/model/Character.class
+com/tk_game/backend/controller/TavernController.class
 com/tk_game/backend/controller/ItemController.class
 com/tk_game/backend/repository/MissionRepository.class
 com/tk_game/backend/repository/ItemTemplateRepository.class

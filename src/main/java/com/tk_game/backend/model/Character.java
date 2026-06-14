@@ -58,4 +58,14 @@ public class Character {
   public void setConstitution(int constitution) { this.constitution = constitution; }
   public int getLuck() { return luck; }
   public void setLuck(int luck) { this.luck = luck; }
+
+  private long seed;
+
+  public long getSeed() { return seed; }
+  public void setSeed(long seed) { this.seed = seed; }
+
+  private int questsCompleted = 0;
+
+  public int getQuestsCompleted() { return questsCompleted; }
+  public void setQuestsCompleted(int questsCompleted) { this.questsCompleted = questsCompleted; }
 }
