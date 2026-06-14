@@ -1,5 +1,5 @@
-com/tk_game/backend/repository/QuestTemplateRepository.class
 com/tk_game/backend/repository/ItemInstanceRepository.class
+com/tk_game/backend/repository/QuestTemplateRepository.class
 com/tk_game/backend/enume/EquipmentSlot.class
 com/tk_game/backend/controller/AuthController.class
 com/tk_game/backend/model/EnemyTemplate.class
@@ -23,8 +23,8 @@ com/tk_game/backend/controller/ItemController.class
 com/tk_game/backend/repository/MissionRepository.class
 com/tk_game/backend/repository/ItemTemplateRepository.class
 com/tk_game/backend/repository/AccountRepository.class
-com/tk_game/backend/model/ItemInstance.class
 com/tk_game/backend/service/AuthService.class
+com/tk_game/backend/model/ItemInstance.class
 com/tk_game/backend/gamelayer/ItemLogic.class
 com/tk_game/backend/model/ItemTemplate.class
 com/tk_game/backend/controller/CharacterController.class

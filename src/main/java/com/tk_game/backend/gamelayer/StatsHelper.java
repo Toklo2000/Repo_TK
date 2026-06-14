@@ -27,23 +27,23 @@ public class StatsHelper {
 
     c.setGold(c.getGold() - cost);
 
-    switch (stat) {
-      case "strength" -> c.setStrength(c.getStrength() + 1);
-      case "dexterity" -> c.setDexterity(c.getDexterity() + 1);
-      case "intelligence" -> c.setIntelligence(c.getIntelligence() + 1);
-      case "constitution" -> c.setConstitution(c.getConstitution() + 1);
-      case "luck" -> c.setLuck(c.getLuck() + 1);
+    switch (stat.toUpperCase()) {
+      case "STR" -> c.setStrength(c.getStrength() + 1);
+      case "DEX" -> c.setDexterity(c.getDexterity() + 1);
+      case "INT" -> c.setIntelligence(c.getIntelligence() + 1);
+      case "CON" -> c.setConstitution(c.getConstitution() + 1);
+      case "LCK" -> c.setLuck(c.getLuck() + 1);
       default -> throw new RuntimeException("Invalid stat");
     }
   }
 
   private static int getStat(Character c, String stat) {
-    return switch (stat) {
-      case "strength" -> c.getStrength();
-      case "dexterity" -> c.getDexterity();
-      case "intelligence" -> c.getIntelligence();
-      case "constitution" -> c.getConstitution();
-      case "luck" -> c.getLuck();
+    return switch (stat.toUpperCase()) {
+      case "STR" -> c.getStrength();
+      case "DEX" -> c.getDexterity();
+      case "INT" -> c.getIntelligence();
+      case "CON" -> c.getConstitution();
+      case "LCK" -> c.getLuck();
       default -> throw new RuntimeException("Invalid stat");
     };
   }

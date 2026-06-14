@@ -9,13 +9,15 @@ public class CharacterDTO {
 
   public int level;
   public int exp;
-
   public int gold;
+
   public int strength;
   public int dexterity;
   public int intelligence;
   public int constitution;
   public int luck;
-  
+
+  public Map<String, Integer> totalStats; 
+
   public List<Map<String, Object>> items;
 }

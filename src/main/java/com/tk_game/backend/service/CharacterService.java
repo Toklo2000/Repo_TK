@@ -5,20 +5,33 @@ import com.tk_game.backend.model.Character;
 import com.tk_game.backend.dto.CharacterDTO;
 import com.tk_game.backend.repository.CharacterRepository;
 import com.tk_game.backend.repository.AccountRepository;
+import com.tk_game.backend.repository.ItemInstanceRepository; 
+import com.tk_game.backend.repository.ItemStatRepository;    
 import com.tk_game.backend.gamelayer.StatsHelper;
+import com.tk_game.backend.enume.StatType;                  
 
 import org.springframework.stereotype.Service;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class CharacterService {
 
   private final CharacterRepository characterRepository;
   private final AccountRepository accountRepository;
+  private final ItemInstanceRepository itemInstanceRepository; 
+  private final ItemStatRepository itemStatRepository;        
 
-  public CharacterService(CharacterRepository characterRepository, AccountRepository accountRepository) {
+  public CharacterService(CharacterRepository characterRepository, 
+                          AccountRepository accountRepository,
+                          ItemInstanceRepository itemInstanceRepository,
+                          ItemStatRepository itemStatRepository) {
     this.characterRepository = characterRepository;
     this.accountRepository = accountRepository;
+    this.itemInstanceRepository = itemInstanceRepository;
+    this.itemStatRepository = itemStatRepository;
   }
+
 
   public Character createCharacter(Long accountId, String name) {
     Account account = accountRepository.findById(accountId)
@@ -53,7 +66,6 @@ public class CharacterService {
 
     dto.id = c.getId();
     dto.name = c.getName();
-
     dto.level = c.getLevel();
     dto.exp = c.getExp();
     dto.gold = c.getGold();
@@ -64,21 +76,32 @@ public class CharacterService {
     dto.constitution = c.getConstitution();
     dto.luck = c.getLuck();
 
+    Map<StatType, Integer> calculatedStats = StatsHelper.calculateTotalStats(
+        c, itemInstanceRepository, itemStatRepository
+    );
+
+    Map<String, Integer> totalStatsMap = new HashMap<>();
+    for (Map.Entry<StatType, Integer> entry : calculatedStats.entrySet()) {
+        totalStatsMap.put(entry.getKey().name(), entry.getValue());
+    }
+    dto.totalStats = totalStatsMap;
+
     return dto;
   }
 
-  public CharacterDTO upgradeStat(Long accountId, String stat) {
-    Character character = getByAccountId(accountId);
-    
-    StatsHelper.upgradeStat(character, stat);
-    Character saved = characterRepository.save(character);
-    
-    return toDTO(saved);
+  public CharacterDTO upgradeStat(Long accountId, String statName) {
+    Character character = characterRepository.findByAccount_Id(accountId)
+        .orElseThrow(() -> new RuntimeException("Character not found"));
+
+    String cleanStat = statName.toUpperCase();
+    StatsHelper.upgradeStat(character, cleanStat);
+
+    characterRepository.save(character);
+
+    return toDTO(character);
   }
 
   public Character UpdateCharacter(Character c) {
     return characterRepository.save(c);
   }
-
-
 }
