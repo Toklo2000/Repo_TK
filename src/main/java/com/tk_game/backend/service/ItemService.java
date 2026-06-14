@@ -1,98 +1,72 @@
 package com.tk_game.backend.service;
 
-import com.tk_game.backend.model.Character;
-import com.tk_game.backend.model.*;
-import com.tk_game.backend.repository.*;
 import com.tk_game.backend.enume.EquipmentSlot;
-import com.tk_game.backend.gamelayer.ItemLogic;
+import com.tk_game.backend.model.Character;
+import com.tk_game.backend.model.ItemInstance;
+import com.tk_game.backend.model.ItemTemplate;
+import com.tk_game.backend.repository.CharacterRepository;
+import com.tk_game.backend.repository.ItemInstanceRepository;
+import com.tk_game.backend.repository.ItemTemplateRepository;
 
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class ItemService {
-
-  private final ItemTemplateRepository templateRepo;
-  private final ItemInstanceRepository instanceRepo;
-  private final ItemStatRepository statRepo;
+  private final ItemInstanceRepository itemInstanceRepo;
+  private final ItemTemplateRepository itemTemplateRepo;
   private final CharacterRepository characterRepo;
 
-  public ItemService(
-      ItemTemplateRepository templateRepo,
-      ItemInstanceRepository instanceRepo,
-      ItemStatRepository statRepo,
-      CharacterRepository characterRepo
-  ) {
-    this.templateRepo = templateRepo;
-    this.instanceRepo = instanceRepo;
-    this.statRepo = statRepo;
+  public ItemService(ItemInstanceRepository itemInstanceRepo,
+                     ItemTemplateRepository itemTemplateRepo,
+                     CharacterRepository characterRepo) {
+    this.itemInstanceRepo = itemInstanceRepo;
+    this.itemTemplateRepo = itemTemplateRepo;
     this.characterRepo = characterRepo;
   }
 
-  public ItemInstance createItem(Long templateId, Long characterId, int level) {
-
-    ItemTemplate template = templateRepo.findById(templateId)
+  public ItemInstance createItem(Long templateId, Long characterId, int itemLevel) {
+    ItemTemplate template = itemTemplateRepo.findById(templateId)
         .orElseThrow(() -> new RuntimeException("Template not found"));
-
     Character character = characterRepo.findById(characterId)
         .orElseThrow(() -> new RuntimeException("Character not found"));
 
     ItemInstance item = new ItemInstance();
     item.setTemplate(template);
-    item.setOwner(character);
+    item.setCharacter(character); 
     item.setSlot(EquipmentSlot.UNEQUIPPED);
 
-    ItemInstance saved = instanceRepo.save(item);
+    return itemInstanceRepo.save(item);
+  }
 
-    rollStats(saved, level);
-
-    return saved;
+  public List<ItemInstance> getItems(Character character) {
+    return itemInstanceRepo.findByCharacter(character);
   }
 
   public void equipItem(Long itemId) {
-
-    ItemInstance item = instanceRepo.findById(itemId)
+    ItemInstance item = itemInstanceRepo.findById(itemId)
         .orElseThrow(() -> new RuntimeException("Item not found"));
 
-    Character owner = item.getOwner();
+    Character character = item.getCharacter(); 
+    List<ItemInstance> items = itemInstanceRepo.findByCharacter(character);
 
     EquipmentSlot targetSlot = item.getTemplate().getType();
 
-    List<ItemInstance> equipped = instanceRepo.findByOwner(owner);
-
-    for (ItemInstance it : equipped) {
-      if (it.getSlot() == targetSlot) {
-        it.setSlot(EquipmentSlot.UNEQUIPPED);
-        instanceRepo.save(it);
+    for (ItemInstance i : items) {
+      if (i.getSlot() == targetSlot) {
+        i.setSlot(EquipmentSlot.UNEQUIPPED);
+        itemInstanceRepo.save(i);
       }
     }
 
     item.setSlot(targetSlot);
-    instanceRepo.save(item);
+    itemInstanceRepo.save(item);
   }
 
   public void unequipItem(Long itemId) {
-    ItemInstance item = instanceRepo.findById(itemId)
+    ItemInstance item = itemInstanceRepo.findById(itemId)
         .orElseThrow(() -> new RuntimeException("Item not found"));
-
     item.setSlot(EquipmentSlot.UNEQUIPPED);
-    instanceRepo.save(item);
+    itemInstanceRepo.save(item);
   }
-  private void rollStats(ItemInstance item, int level) {
-    long seed = item.getId() * 31L;
-    Random r = ItemLogic.createRandom(seed);
-
-    int statCount = ItemLogic.rollStatCount(r);
-
-    for (int i = 0; i < statCount; i++) {
-      ItemStat stat = new ItemStat();
-      stat.setItemInstance(item);
-      stat.setType(ItemLogic.rollStatType(r));
-      stat.setValue(ItemLogic.rollStatValue(r, level));
-
-      statRepo.save(stat);
-    }
-  }
-
 }

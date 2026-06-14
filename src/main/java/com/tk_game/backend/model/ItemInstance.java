@@ -1,6 +1,6 @@
 package com.tk_game.backend.model;
 
-import com.tk_game.backend.model.Character;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tk_game.backend.enume.EquipmentSlot;
 import jakarta.persistence.*;
 
@@ -12,21 +12,24 @@ public class ItemInstance {
   private Long id;
 
   @ManyToOne
+  @JoinColumn(name = "template_id")
   private ItemTemplate template;
 
   @ManyToOne
-  private Character owner;
+  @JoinColumn(name = "character_id")
+  @JsonIgnore
+  private Character character;
 
   @Enumerated(EnumType.STRING)
-  private EquipmentSlot slot = EquipmentSlot.UNEQUIPPED;
+  private EquipmentSlot slot;
 
   public Long getId() { return id; }
 
   public ItemTemplate getTemplate() { return template; }
   public void setTemplate(ItemTemplate template) { this.template = template; }
 
-  public Character getOwner() { return owner; }
-  public void setOwner(Character owner) { this.owner = owner; }
+  public Character getCharacter() { return character; }
+  public void setCharacter(Character character) { this.character = character; }
 
   public EquipmentSlot getSlot() { return slot; }
   public void setSlot(EquipmentSlot slot) { this.slot = slot; }

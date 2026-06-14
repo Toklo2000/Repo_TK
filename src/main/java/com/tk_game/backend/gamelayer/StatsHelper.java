@@ -61,7 +61,7 @@ public class StatsHelper {
     result.put(StatType.CON, character.getConstitution());
     result.put(StatType.LCK, character.getLuck());
 
-    List<ItemInstance> items = itemRepo.findByOwner(character);
+    List<ItemInstance> items = itemRepo.findByCharacter(character);
 
     for (ItemInstance item : items) {
 
