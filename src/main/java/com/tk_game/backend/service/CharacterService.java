@@ -19,15 +19,18 @@ public class CharacterService {
   private final AccountRepository accountRepository;
   private final ItemInstanceRepository itemInstanceRepository;
   private final ItemStatRepository itemStatRepository;
+  private final StatsHelper statsHelper;
 
   public CharacterService(CharacterRepository characterRepository,
                           AccountRepository accountRepository,
                           ItemInstanceRepository itemInstanceRepository,
-                          ItemStatRepository itemStatRepository) {
+                          ItemStatRepository itemStatRepository,
+                          StatsHelper statsHelper) {
     this.characterRepository = characterRepository;
     this.accountRepository = accountRepository;
     this.itemInstanceRepository = itemInstanceRepository;
     this.itemStatRepository = itemStatRepository;
+    this.statsHelper = statsHelper;
   }
 
   public Character createCharacter(Long accountId, String name) {
@@ -67,9 +70,7 @@ public class CharacterService {
     dto.intelligence = c.getIntelligence();
     dto.constitution = c.getConstitution();
     dto.luck = c.getLuck();
-    Map<StatType, Integer> calculatedStats = StatsHelper.calculateTotalStats(
-        c, itemInstanceRepository, itemStatRepository
-    );
+    Map<StatType, Integer> calculatedStats = statsHelper.calculateTotalStats(c);
     Map<String, Integer> totalStatsMap = new HashMap<>();
     for (Map.Entry<StatType, Integer> entry : calculatedStats.entrySet()) {
         totalStatsMap.put(entry.getKey().name(), entry.getValue());

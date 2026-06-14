@@ -7,12 +7,24 @@ import com.tk_game.backend.enume.StatType;
 import com.tk_game.backend.repository.ItemInstanceRepository;
 import com.tk_game.backend.repository.ItemStatRepository;
 
+import org.springframework.stereotype.Component; 
+
 import java.lang.Math;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class StatsHelper {
+
+  private final ItemInstanceRepository itemRepo;
+  private final ItemStatRepository statRepo;
+
+  public StatsHelper(ItemInstanceRepository itemRepo, ItemStatRepository statRepo) {
+    this.itemRepo = itemRepo;
+    this.statRepo = statRepo;
+  }
+
   public static int calculateUpgradeCost(Character c, String stat) {
     int value = getStat(c, stat);
     return (int)Math.floor((double)value / 20 + 1) * 5 * value; //x^2 / 4 ~
@@ -48,11 +60,7 @@ public class StatsHelper {
     };
   }
 
-  public static Map<StatType, Integer> calculateTotalStats(
-      Character character,
-      ItemInstanceRepository itemRepo,
-      ItemStatRepository statRepo ) {
-
+  public Map<StatType, Integer> calculateTotalStats(Character character) {
     Map<StatType, Integer> result = new EnumMap<>(StatType.class);
 
     result.put(StatType.STR, character.getStrength());

@@ -6,7 +6,7 @@ import com.tk_game.backend.service.ShopService;
 import com.tk_game.backend.service.ItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +32,7 @@ public class ShopController {
   }
 
   @PostMapping("/buy")
+  @Transactional
   public ResponseEntity<Map<String, Object>> buyItem(@RequestParam Long characterId, @RequestParam Long templateId, @RequestParam int price, @RequestParam long itemSeed) {
 
     Character character = characterRepo.findById(characterId).orElseThrow(() -> new RuntimeException("Character not found"));
