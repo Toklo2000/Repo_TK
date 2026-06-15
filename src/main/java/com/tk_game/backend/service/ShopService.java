@@ -20,30 +20,31 @@ public class ShopService {
   }
 
   public List<Map<String, Object>> generateShopItems(Character character) {
+    return generateShopItems(character, 0, 6);
+  }
+
+  public List<Map<String, Object>> generateShopItems(Character character, int offset, int count) {
     long today = LocalDate.now().toEpochDay();
-    long seed = character.getId() * 100000L + today;
-    Random rng = ItemLogic.createRandom(seed);
+    long baseSeed = character.getId() * 100000L + today;
 
     List<ItemTemplate> allTemplates = itemTemplateRepo.findAll();
     if (allTemplates.isEmpty()) return Collections.emptyList();
 
-    List<ItemTemplate> shuffled = new ArrayList<>(allTemplates);
-    Collections.shuffle(shuffled, rng);
-
-    int count = Math.min(6, shuffled.size());
     List<Map<String, Object>> result = new ArrayList<>();
 
-    for (int i = 0; i < count; i++) {
-      ItemTemplate template = shuffled.get(i);
+    for (int i = offset; i < offset + count; i++) {
+      long itemSeed = baseSeed + i * 999L;
+      Random rng = ItemLogic.createRandom(itemSeed);
 
-      long itemSeed = seed + i * 999L;
-      Random itemRng = ItemLogic.createRandom(itemSeed);
-      int statCount = ItemLogic.rollStatCount(itemRng);
+      List<ItemTemplate> shuffled = new ArrayList<>(allTemplates);
+      Collections.shuffle(shuffled, ItemLogic.createRandom(baseSeed + i * 7L));
+      ItemTemplate template = shuffled.get(0);
 
+      int statCount = ItemLogic.rollStatCount(rng);
       Map<String, Integer> stats = new LinkedHashMap<>();
       for (int j = 0; j < statCount; j++) {
-        StatType type = ItemLogic.rollStatType(itemRng);
-        int value = ItemLogic.rollStatValue(itemRng, character.getLevel());
+        StatType type = ItemLogic.rollStatType(rng);
+        int value = ItemLogic.rollStatValue(rng, character.getLevel());
         stats.put(type.name(), value);
       }
 
@@ -57,8 +58,10 @@ public class ShopService {
       item.put("stats", stats);
       item.put("price", price);
       item.put("itemSeed", itemSeed);
+      item.put("index", i);
       result.add(item);
     }
+
     return result;
   }
 }
